@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# TODO
+# - Expose multiple destinations to the command syntaxe
+# - Expose multiple users to the command syntaxe
+
+backupfile="/var/log/backup.log"
+
+if [ $# -ne 2 ]; then
+	app=`basename $0`
+	echo "Usage: $app USER DEST"
+	echo "Backup script to mirror user files to the specified destination."
+	echo "USER is the user for which to mirror the data."
+	echo "DEST is the directory where to mirror the data."
+	echo "The script also mirrors the /etc system directory."
+	echo "The script logs its activity to $backupfile"
+	echo "You might want to add it to /etc/cron.daily to run it every day."
+	exit 1
+fi
+
+USER=$1
+DEST=$2
+
+# --dry-run -q
+opt='-rav --delete --exclude lost+found --exclude .cache --exclude Trash --exclude Downloads --exclude Videos'
+dests=($DEST)
+users=($USER)
+srcs=(/etc)
+
+for user in ${users[@]}; do
+	srcs+=("/home/$user")
+done
+
+date_start=`date`
+
+echo "Backup started on $date_start" >> $backupfile
+
+for src in ${srcs[@]}; do
+	for dest in ${dests[@]}; do
+		mounted=`mount|grep -w $dest`
+		if [ -z "$mounted" ]; then
+			echo "WARNING: skipping backup of \"$src\" to \"$dest\" since device not mounted!" >> $backupfile
+			continue
+		fi
+		echo "[*] Making a backup of \"$src\" to \"$dest\"..." >> $backupfile
+		rsync $opt $src $dest
+	done
+done
+
+date_end=`date`
+echo "Backup completed on $date_end (started on $date_start)" >> $backupfile

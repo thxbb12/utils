@@ -3,7 +3,7 @@
 # Extract subtitles of each mkv file in the current directory.
 # Note: require mkvmerge from the mkvtoolnix package.
 
-if [ $# -ne 1 ]; then
+if [ $# -ne 0 ]; then
 	app=`basename $0`
 	echo "Usage: $app FILES"
 	echo "Extract the subtitles for each input file (usually .mkv)."
