@@ -1,0 +1,37 @@
+#!/usr/bin/perl -w
+
+# Recursively sort all movies in the current directory by duration.
+#
+# This script assumes movies are named using the following convention:
+# title-a.b-xhy.ext
+# where:
+#   title: title of the movie; make sure there is no dash (-) in the title
+#   a.b: score of the movie as defined by IMDB, e.g. 7.8 (see https://www.imdb.com/) 
+#   xhy: duration of the movie, e.g. 1h43
+#   ext: extension of the movie, e.g. mp4
+
+use strict;
+use warnings;
+
+open(my $fh, '-|', 'find . -type f') or die $!;
+
+my %movies = ();
+
+while (my $movie = <$fh>) {
+	if ($movie =~ m/(avi$|mkv$|mp4$|mov$|wmv$|flv$)/i) {   # /i for case-unsensitive
+		if ($movie =~ /\dh\d+/) {   # matches digit h digits
+			my $length = $&;  # extract match
+			#print $movie;
+			push(@{$movies{$length}}, $movie);
+		}
+	}
+}
+
+foreach my $length (sort keys %movies) {
+	print "\nLength $length:\n";
+	foreach (@{$movies{$length}}) {
+		print "\t$_";
+	}
+}
+
+exit 0;
