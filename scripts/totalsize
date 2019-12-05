@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	appname=`basename $0`
+	echo "Usage: $appname EXT"
+	echo "Recursively computes how much MB are used"
+	echo "by files of the specified extension."
+	echo "The extension is not case sensitive."
+	exit 1
+fi
+
+EXT=$1
+size=`find . -iname "*.$EXT" -exec ls -l {} \;|awk 'BEGIN {n=0} {n+=$5} END{print n/(1024*1024)}'`
+echo "$size MB"

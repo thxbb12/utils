@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ $# -ne 2 ]; then
+	echo "Convert a video file to a H.264 compressed mp4 file"
+	echo "Usage: video2h265 BITRATE FILE"
+	echo "The generated output file has the same name as the input, except"
+	echo "the extension is mp4 and the filename is postfixed with -h264."
+	echo "Does not convert audio, just copy it."
+	echo "BITRATE is given in KB."
+	echo "Require avconv"
+	exit 1
+fi
+
+bitrate=$1
+input="$2"
+ext=${input##*.}
+output="${input%%.$ext}-h265.mp4"
+avconv -i $input -b "$bitrate"k -codec:v libx265 -codec:a copy "$output"

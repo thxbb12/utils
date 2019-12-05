@@ -1,0 +1,20 @@
+#!/bin/bash
+if [ $# -ne 1 ]; then
+	echo "Convert a video file to a MP4 video files"
+	echo "Usage: video2mp4 FILE"
+	echo "The generated output file has the same name as the input"
+	echo "except its extension will be mp4."
+	echo "Require ffmepg"
+	exit 1
+fi
+
+input="$1"
+ext=${input##*.}
+output="${input%%.$ext}.mp4"
+
+if [ -e $output ]; then
+	echo "$output already exists!"
+	echo "Aborted."
+	exit 1
+fi
+ffmpeg -i $input $output

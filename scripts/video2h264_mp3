@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ $# -ne 2 ]; then
+	echo "Convert a video file to a H.264 compressed mp4 file"
+	echo "with audio converted to MP3."
+	echo "Usage: video2h264 BITRATE FILE"
+	echo "The generated output file has the same name as the input, except"
+	echo "the extension is mp4 and the filename is postfixed with -h264"
+	echo "BITRATE is given in KB."
+	echo "Require avconv"
+	exit 1
+fi
+
+bitrate=$1
+input="$2"
+ext=${input##*.}
+output="${input%%.$ext}-h264.mp4"
+avconv -i $input -b "$bitrate"k -codec:v libx264 -acodec libmp3lame -ac 2 -qscale:a 4 -ar 44100 "$output"
