@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    app=`basename $0`
+    echo "Usage: $app DEST"
+    echo "Create symbolic links of all files/dirs in the current"
+	echo "directory to the DEST directory."
+	echo "Will fail if the destination directory doesn't exist."
+    exit 1
+fi
+
+DEST=$1
+if [ ! -d "$DEST" ]; then
+	echo "does NOT exist"
+fi
+
+for f in *; do
+	ln -s $PWD/"$f" $DEST
+done
