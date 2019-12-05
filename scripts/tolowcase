@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	app=`basename $0`
+	echo "Usage: $app FILES"
+	echo "Change file names to lower case."
+	echo "Wildcard are allowed, e.g. \"*.txt\"."
+	exit 1
+fi
+
+for i in "$@"; do
+	dst=`echo "$i" | tr [:upper:] [:lower:]`
+	if [ "$i" != "$dst" ]; then
+		# skip renaming if destination file already exists                   
+		if [ -e "$dst" ]; then
+			echo "Skipping \"$i\" as \"$dst\" already exists!"
+		else
+			mv "$i" "$dst";
+		fi
+	fi
+done
