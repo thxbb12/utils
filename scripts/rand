@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+	app=`basename $0`
+	echo "Usage: $app MIN MAX"
+	echo "Return a random value in the [MIN,MAX] range."
+	echo "Require the bc utility."
+	exit 1
+fi
+
+min=$1
+max=$2
+let delta=$max-$min+1
+
+# $RANDOM returns a value between [0,32767]
+t=`echo "$min+$delta*$RANDOM/32767"|bc -l`
+
+# Retrieve the integer part
+t=${t%.*}
+
+echo $t
+

@@ -1,0 +1,69 @@
+#!/bin/bash
+
+function usage {
+	app=`basename $0`
+	echo "Usage: $app RESOLUTION IMAGE1 IMAGE2 ..."
+	echo "Resize the specified images in place."
+	echo "Require convert from ImageMagick."
+	echo "Resolution is mandatory and must be one of:"
+	for k in "${!resolutions_map[@]}"; do
+		echo "    $k"
+	done | sort -n
+	exit 1
+}
+
+# Define a hash for the different output resolutions
+declare -A resolutions_map=(
+["-2mp"]="2000000@"
+["-4mp"]="4000000@"
+["-6mp"]="6000000@"
+["-8mp"]="8000000@"
+["-12mp"]="12000000@"
+["-16mp"]="16000000@"
+["-20mp"]="20155392@"
+["-24mp"]="24000000@"
+["-1024x768"]="1024x768"
+["-1152x768"]="1152x768"
+["-1280x960"]="1280x960"
+["-1440x960"]="1440x960"
+["-1600x1200"]="1600x1200"
+["-1800x1200"]="1800x1200"
+["-1920x1080"]="1920x1080"
+)
+
+if [ $# -lt 2 ]; then
+	usage $@
+fi
+
+if [ ! ${resolutions_map[$1]+_} ]; then
+	usage $@
+fi
+
+resolution=${resolutions_map[$1]}
+
+echo "Resizing images to $1"
+shift
+
+while (($#)); do
+	if [ ! -f "$1" ]; then
+		echo "Skipping missing file $1"
+		shift
+		continue
+	fi
+
+	echo "Processing $1 ..."
+
+	convert -quality 90 -resize $resolution "$1" "$1"
+
+	# More detailed version, but about the same
+	# unsharp params: radious, amount, threshold: -unsharp 2.5x1+1.5+0.05
+	#convert -quality 95 -filter Lanczos -sampling-factor 1x1 -unsharp 1.5x1+0.7+0.02 -distort Resize ${resolutions_map[$select]} "$1" "$output"
+
+	if [ $? -eq 0 ]; then
+		echo "$1 completed"
+	else
+		echo "$1 FAILED!" 
+	fi
+
+	shift
+done

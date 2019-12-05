@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function usage {
+	app=`basename $0`
+	echo "Usage: $app IMAGE1 IMAGE2 ..."
+	echo "Sharpen the specified images in place."
+	echo "Require convert from ImageMagick."
+	exit 1
+}
+
+if [ $# -lt 1 ]; then
+	usage $@
+fi
+
+while (($#)); do
+	if [ ! -f $1 ]; then
+		echo "Skipping missing file $1"
+		shift
+		continue
+	fi
+
+	echo "Sharpening $1 ..."
+
+	# Resize image and apply sharpening
+	convert -quality 90 -sharpen 1.0x1.0 "$1" "$1"
+
+	# More detailed version, but about the same
+	# unsharp params: radious, amount, threshold: -unsharp 2.5x1+1.5+0.05
+	#convert -quality 90 -filter Lanczos -sampling-factor 1x1 -unsharp 1.5x1+0.7+0.02 -distort Resize ${resolutions_map[$select]} "$1" "$output"
+
+	if [ $? -eq 0 ]; then
+		echo "$1 completed"
+	else
+		echo "$1 FAILED!" 
+	fi
+
+	shift
+done

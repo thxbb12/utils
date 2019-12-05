@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+	app=`basename $0`
+	echo "Usage: $app EXT QUAL"
+	echo "Convert all files matching the EXT extension to jpegs."
+	echo "QUAL specifies the jpeg quality from 0 (worse) to 100 (best)."
+	echo "Require convert from ImageMagick."
+	echo "To convert all tif files to jpg, using a quality of 80:"
+	echo "$app tif 80"
+	exit 1
+fi
+
+for i in *.$1; do
+	convert -quality $2 "$i" "${i%$1}jpg"
+done

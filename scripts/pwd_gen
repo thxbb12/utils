@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app N"
+	echo "Generate a random password of length N"
+	exit 1
+fi
+
+cat /dev/urandom | tr -dc _A-Z-a-z-0-9!@%{},:. | head -c$1 && echo ""

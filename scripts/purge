@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Recursively purge (delete) all files and directories
+# older than the specified number of days.
+
+if [ $# -ne 2 ] && [ $# -ne 3 ]; then
+	app=$(basename $0)
+	echo "Usage: $app DIR N [--dry-run]"
+	echo "Recursively purges (deletes) all files and"
+	echo "directories from DIR older than N days."
+	echo "--dry-run is optional and if set, nothing will be purged."
+	exit 1
+fi
+
+dir="$1"
+n="$2"
+dryrun=0
+
+if [ "$3" = "--dry-run" ]; then
+	dryrun=1
+	echo "[*] dry-mode enabled"
+fi
+
+# purges files
+echo "[*] Purging files older than $n days"
+if [ $dryrun -eq 1 ]; then
+	find "$dir" -type f -mtime +$n
+else
+	find "$dir" -type f -mtime +$n -exec rm -v {} \;
+fi
+
+# purges directories
+echo "[*] Purging directories older than $n days"
+if [ $dryrun -eq 1 ]; then
+	find "$dir" -depth -type d -mtime +$n
+else
+	find "$dir" -depth -type d -mtime +$n -exec rmdir -v --ignore-fail-on-non-empty {} \;
+fi
+
+echo "[*] Purging completed"

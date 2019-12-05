@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app EXT"
+	echo "Remove the extension of all files, in the current"
+	echo "directory matching the EXT extension."
+	exit 1
+fi
+
+for i in *; do
+	dst="${i/.$1/}";
+	# skip files that don't have an extension
+	if [ "$i" != "$dst" ]; then
+		# skip renaming if destination file already exists
+		if [ -e "$dst" ]; then
+			echo "Skipping \"$dst\" as it already exists!"
+		else
+			mv "$i" "$dst";
+		fi
+	fi;
+done

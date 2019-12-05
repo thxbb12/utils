@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+	app=`basename $0`
+	echo "Usage: $app SRC DEST"
+	echo "Rename all files in the current directory from the SRC extension"
+	echo "to the DEST extension."
+	echo "To change all .JPG files into .jpg: $app JPG jpg"
+	exit 1
+fi
+
+for i in *.$1; do
+	mv "$i" "${i%$1}$2"
+done

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app EXT"
+	echo "Recursively counts the number of lines for all file matching the EXT extension."
+	echo "The extension is not case sensitive."
+	exit 1
+fi
+
+EXT=$1
+find . -iname "*.$EXT" -exec wc -l {} \;|awk 'BEGIN {n=0} {n+=$1} END{print n}'

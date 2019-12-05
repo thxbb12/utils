@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Extract subtitles of each mkv file in the current directory.
+# Note: require mkvmerge from the mkvtoolnix package.
+
+if [ $# -ne 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app FILES"
+	echo "Extract the subtitles for each input file (usually .mkv)."
+	echo "Wildcard are allowed, e.g. \"*.mkv\"."
+	exit 1
+fi
+
+for i in $1; do
+	vid_file="$i"
+	echo "Processing \"$vid_file\""
+	mkvmerge -i $vid_file | grep -i subtitles | awk '{print $3}' | awk -F":" '{print $1}' | while read track_id; do
+		subtitle_file="$vid_file"_"$track_id".srt
+		echo "    Extracting subtitles at track $track_id"
+		mkvextract tracks $vid_file $track_id:$subtitle_file
+	done
+done

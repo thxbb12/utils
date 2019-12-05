@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Show how to use yad to display a windows with logout options.
+# Actions use systemd for logout, poweroff and suspend.
+# Require the yad utility.
+
+yad --compact --undecorated --button="Suspend":0 --button="Logout":1 --button="Power off":2 --button="Cancel":3
+
+case $? in
+ 0) systemctl suspend;;
+ 1) systemctl exit 0;;
+ 2) systemctl poweroff;;
+ 3) ;;
+esac

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app DIR1 DIR2 ..."
+	echo "Set all files under the specified dirs to: user rw, group r, others r"
+	echo "Set all directories under dirs to: user rwx, group rx, others rx"
+	exit 1
+fi
+
+for i in "$@"; do
+	find "$i" -type d -exec chmod 755 {} \;
+	find "$i" -type f -exec chmod 644 {} \;
+done

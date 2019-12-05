@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	app=`basename $0`
+	echo "Usage: $app PATTERN"
+	echo "Recursively search all files containing a given PATTERN."
+	exit 1
+fi
+
+find . -iname "*$1*" -type f
