@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# UGLY script!
-# Update code to replace IFs with a dictionnary lookup 
-
 if [ $# -eq 0 ]; then
 	app=`basename $0`
 	echo "Usage: $app FILES"
