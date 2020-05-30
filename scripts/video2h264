@@ -7,12 +7,19 @@ if [ $# -ne 2 ]; then
 	echo "the extension is mp4 and the filename is postfixed with -h264."
 	echo "Does not convert audio, just copy it."
 	echo "BITRATE is given in KB."
-	echo "Require avconv"
+	echo "Requires ffmpeg"
 	exit 1
 fi
+
+# ffmpeg arguments:
+# -r   : output framerate (24, 30, etc.)
+# -s   : output resolution (hd720, 1280x720, 320x200, etc.)
+# -b:v : output bitrate (800k, 1M, etc.)
+# -c:v : output video codec (h264, hevc, vp9, etc.)
+# ffmpeg -i input.mp4 -b:v 1500k -r 15 -s 320x200 -c:v h264 output.mp4
 
 bitrate=$1
 input="$2"
 ext=${input##*.}
 output="${input%%.$ext}-h264.mp4"
-avconv -i $input -b "$bitrate"k -codec:v libx264 -codec:a copy "$output"
+ffmpeg -i "$input" -b:v "$bitrate"k -c:v h264 "$output"

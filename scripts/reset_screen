@@ -1,0 +1,2 @@
+# change to default resolution
+xrandr -s 0

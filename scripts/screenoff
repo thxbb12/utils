@@ -1,0 +1,3 @@
+#!/bin/bash
+# standby, suspend, off
+xset dpms force standby
