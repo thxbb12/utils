@@ -14,14 +14,14 @@ fi
 
 for i in "$@"; do
 	ori=$i
-	i=${i//" ",/_}
-	i=${i//[éèêë]/e}
-	i=${i//çĉ/c}
-	i=${i//[üû]/u}
-	i=${i//[ïî]/i}
-	i=${i//öô/o}
-	i=${i//[äàâ]/a}
-	i=${i//&/_and_}
+	i="${i// /_}"
+	i="${i//[éèêë]/e}"
+	i="${i//[çĉ]/c}"
+	i="${i//[üû]/u}"
+	i="${i//[ïî]/i}"
+	i="${i//öô/o}"
+	i="${i//[äàâ]/a}"
+	i="${i//&/_and_}"
 	if [ "$i" != "$ori" ]; then
 		# skip renaming if destination file already exists                   
 		if [ -e "$i" ]; then

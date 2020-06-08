@@ -17,9 +17,19 @@ fi
 # -b:v : output bitrate (800k, 1M, etc.)
 # -c:v : output video codec (h264, hevc, vp9, etc.)
 # ffmpeg -i input.mp4 -b:v 1500k -r 15 -s 320x200 -c:v h264 output.mp4
+# -filter_threads n : uses n threads for processing (default to total number of CPUs)
+
+# To avoid saturating the system, leave 1 physical CPU for other things
+cores=`lscpu|grep "^CPU(s):"|awk -F":" '{print $2}'`
+threads_per_core=`lscpu|grep "^Thread(s) per core"|awk -F":" '{print $2}'`
+cpus=$((cores/threads_per_core))
+
+if [ $cpus -gt 1 ]; then
+	cpus=$((cpus-1))
+fi
 
 bitrate=$1
 input="$2"
 ext=${input##*.}
 output="${input%%.$ext}-h264.mp4"
-ffmpeg -i "$input" -b:v "$bitrate"k -c:v h264 "$output"
+ffmpeg -i "$input" -b:v "$bitrate"k -c:v h264 -threads $cpus "$output"
