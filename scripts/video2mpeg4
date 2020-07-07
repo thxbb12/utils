@@ -1,14 +1,14 @@
 #!/bin/bash
 
 if [ $# -ne 2 ]; then
-	echo "Convert a video file to a H.264 compressed mp4 file"
-	echo "Usage: video2h264 QUALITY FILE"
+	echo "Convert a video file to a mpeg4 compressed file"
+	echo "Usage: video2mpeg4 QUALITY FILE"
 	echo "The generated output file has the same name as the input, except"
-	echo "the extension is mp4 and the filename is postfixed with -h264."
+	echo "the extension is mp4 and the filename is postfixed with -mpeg4."
 	echo "The video codec uses a variable bitrate."
 	echo "Does not convert audio, just copy it."
-	echo "QUALITY must be between 0 (best) and 51 (worst)."
-	echo "A quality of 23 seems to be a good default."
+	echo "QUALITY must be between 1 (best) and 31 (worst)."
+	echo "A quality of 10 seems to be a good default."
 	echo "Requires ffmpeg"
 	exit 1
 fi
@@ -24,8 +24,8 @@ fi
 # To list all supported codecs by ffmpeg: ffmpeg -codecs
 
 quality=$1
-if [ $quality -gt 51 ] || [ $quality -lt 0 ]; then
-	echo "Invalid quality value! (must be between 0 and 51)"
+if [ $quality -gt 31 ] || [ $quality -lt 1 ]; then
+	echo "Invalid quality value! (must be between 1 and 31)"
 	exit 1
 fi
 
@@ -40,6 +40,5 @@ fi
 
 input="$2"
 ext=${input##*.}
-output="${input%%.$ext}-h264.mp4"
-#ffmpeg -i "$input" -b:v "$bitrate"k -c:v h264 -threads $cpus "$output"
-ffmpeg -i "$input" -c:v libx264 -preset medium -crf "$quality" -threads $cpus "$output"
+output="${input%%.$ext}-mpeg4.mp4"
+ffmpeg -i "$input" -c:v libxvid -qscale:v "$quality" -threads $cpus "$output"
