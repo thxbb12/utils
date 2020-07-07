@@ -8,7 +8,7 @@ if [ $# -ne 2 ]; then
 	echo "The video codec uses a variable bitrate."
 	echo "Does not convert audio, just copy it."
 	echo "QUALITY must be between 1 (best) and 31 (worst)."
-	echo "A quality of 10 seems to be a good default."
+	echo "A quality of 4 seems to be a good default."
 	echo "Requires ffmpeg"
 	exit 1
 fi
