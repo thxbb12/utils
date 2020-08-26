@@ -1,0 +1,13 @@
+#!/bin/bash
+
+state=`synclient|grep Touchpad|awk '{print $3}'`
+echo $state
+if [ "$state" = "1" ]; then
+	echo "ON"
+	synclient TouchpadOff=0
+	#notify-send "Touchpad enabled"
+else
+	echo "OFF"
+	synclient TouchpadOff=1
+	#notify-send "Touchpad disabled"
+fi
