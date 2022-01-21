@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	echo "Convert the audio of a video to AAC while leaving the video untouched."
+	echo "Usage: audio2aac FILE"
+	echo "The generated output file has the same name as the input,"
+	echo "except for the filename that is postfixed with -aac"
+	echo "Requires ffmpeg"
+	exit 1
+fi
+
+# To avoid saturating the system, leave 1 physical CPU for other things
+cores=`lscpu|grep "^CPU(s):"|awk -F":" '{print $2}'`
+threads_per_core=`lscpu|grep "^Thread(s) per core"|awk -F":" '{print $2}'`
+cpus=$((cores/threads_per_core))
+
+if [ $cpus -gt 1 ]; then
+	cpus=$((cpus-1))
+fi
+
+input="$1"
+ext=${input##*.}
+output="${input%%.$ext}-aac.$ext"
+ffmpeg -i "$input" -c:v copy -c:a aac -threads $cpus "$output"
