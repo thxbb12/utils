@@ -1,2 +1,4 @@
 # change to default resolution
-xrandr --output HDMI-1 --auto -d :0
+#xrandr --output HDMI-1 --auto -d :0
+
+xrandr --auto
