@@ -1,0 +1,20 @@
+#!/bin/bash
+
+CPUS=4
+RAM=4G
+
+function echoerr {
+    echo "$@" >&2
+}
+
+if [ $# -ne 1 ]; then
+    appname=`basename $0`
+	echoerr "$appname - launch a QEMU VM on the specified disk image."
+	echoerr "The VM uses $CPUS CPUs and $RAM of RAM."
+    echoerr ""
+    echoerr "Usage: $appname disk"
+    echoerr "disk    the disk image to use (typically a .qcow file)"
+    exit 1
+fi
+
+qemu-system-x86 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -drive file=$1,index=0,media=disk,format=qcow2,if=virtio -vga virtio -device virtio-serial-pci -object -nic user,model=virtio-net-pci
