@@ -2,7 +2,6 @@
 
 CPUS=4
 RAM=4G
-UEFI="-bios /usr/share/ovmf/OVMF.fd"
 
 APP=`basename $0`
 
@@ -12,9 +11,9 @@ function echoerr {
 
 function usage {
 	echoerr "$APP - launch a VM on the specified disk image(s)."
-	echoerr "The VM is configured to boot with UEFI, $CPUS CPUs and $RAM of RAM."
+	echoerr "The VM is configured with $CPUS CPUs and $RAM of RAM."
     echoerr ""
-    echoerr "Usage: $APP -d disk -c iso"
+    echoerr "Usage: $APP -d disk -i iso"
     echoerr "disk    the disk image to use (typically a .qcow file)"
     echoerr "iso     the CD/DVD-ROM image to use (typically an .iso file)"
     echoerr ""
@@ -33,7 +32,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -c)
+    -i)
       iso="$2"
       shift # past argument
       shift # past value
@@ -46,7 +45,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ ! -z $disk ]; then
-    disk_drive="-drive file=$disk,index=0,media=disk,format=qcow2,if=virtio"
+    disk_drive="-drive file=$disk,index=0,media=disk,format=qcow2,discard=unmap,detect-zeroes=unmap,if=virtio"
 fi
 
 if [ ! -z $iso ]; then
@@ -54,4 +53,4 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 $UEFI -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio -device virtio-serial-pci -nic user,model=virtio-net-pci
+qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio -device virtio-serial-pci -nic user,model=virtio-net-pci
