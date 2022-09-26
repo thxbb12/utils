@@ -1,7 +1,18 @@
 #!/bin/bash
 
+# Uses 4 cpu cores
 CPUS=4
+# Uses 4GB RAM
 RAM=4G
+# Provides the VM with a network interface and NAT Internet access.
+# The argument "-nic none" tells QEMU to not use a network interface.
+NETWORK="-nic user,model=virtio-net-pci"
+
+# QEMU system to use.
+QEMU=qemu-system-x86_64
+
+# QEMU minimum major version required.
+MAJOR_VERSION_REQUIRED=3
 
 APP=`basename $0`
 
@@ -21,21 +32,39 @@ function usage {
     exit 1
 }
 
+function check_qemu_version {
+    qemu_version=`$QEMU -version 2>/dev/null`
+    if [ $? -ne 0 ]; then
+        echoerr "$QEMU is required but not found."
+        echoerr "On Ubuntu/Debian, it can be installed with \"sudo apt-get install qemu-system-x86\"."
+        exit 1
+    fi
+    
+    full_version=`$QEMU -version|grep ^QEMU|awk -F" " '{print $4}'`
+    major_version=`echo $full_version|awk -F"." '{print $1}'`
+    if [ $major_version -lt $MAJOR_VERSION_REQUIRED ]; then
+        echoerr "$QEMU version $MAJOR_VERSION_REQUIRED.0.0 or newer is required."
+        echoerr "Found version $full_version which is not recent enough."
+        echoerr "Aborted."
+        exit 1
+    fi
+}
+
 if [ $# -lt 1 ]; then
     usage
 fi
+
+check_qemu_version
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     -d)
       disk="$2"
-      shift # past argument
-      shift # past value
+      shift 2
       ;;
     -i)
       iso="$2"
-      shift # past argument
-      shift # past value
+      shift 2
       ;;
     *)
       echo "Unknown argument $1"
@@ -52,9 +81,5 @@ if [ ! -z $iso ]; then
     cdrom_drive="-drive file=$iso,index=1,media=cdrom,format=raw,read-only=on"
 fi
 
-network="-nic user,model=virtio-net-pci"
-
-guest_agent="-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=path_to_sock_file,server=on,wait=off,id=qga0"
-
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio -device virtio-serial-pci $network $guest_agent
+qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK
