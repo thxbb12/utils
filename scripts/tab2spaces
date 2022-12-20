@@ -1,0 +1,14 @@
+#!/bin/bash
+
+TAB_SIZE=4
+
+if [ $# -ne 1 ]; then
+    app=`basename $0`
+    echo "Usage: $app FILE"
+    echo "Convert tabs in FILE with 4 spaces"
+    exit 1
+fi
+
+f=$$.tmp
+expand -t $TAB_SIZE $1 > $f
+mv $f $1
