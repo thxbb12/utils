@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    app=`basename $0`
+    echo "Usage: $app FILE"
+    echo "Remove trailing spaces in FILE"
+    exit 1
+fi
+
+sed -i 's/[[:space:]]*$//' $1
