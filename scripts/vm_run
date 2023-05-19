@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Uses 4 cpu cores
-CPUS=4
+CPUS=1
 # Uses 4GB RAM
 RAM=4G
 # Provides the VM with a network interface and NAT Internet access.
@@ -82,4 +82,4 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK
+qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK -monitor stdio
