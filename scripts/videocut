@@ -12,5 +12,5 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-tmp=tmp_$$_$RANDOM_$1
-ffmpeg -i $1 -ss $2 -c:v copy -c:a copy $tmp && mv $tmp $1
+tmp="tmp_$$_$RANDOM_$1"
+ffmpeg -i "$1" -ss $2 -c:v copy -c:a copy "$tmp" && mv "$tmp" "$1"
