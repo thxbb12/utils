@@ -1,16 +1,14 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
 	app=`basename $0`
-	echo "Usage: $app FILE TIMEFROM"
-	echo "Cut the beginning of a video."
-	echo "TIMEFROM specifies from what time the video should be kept."
-	echo "This example removes the first hour, 5 min and 19 seconds from movie.mp4:"
-	echo "$app movie.mp4 01:05:20"
-	echo "This example removes the first 12 min and 56 seconds from cartoon.mp4:"
-	echo "$app cartoon 12:57"
+	echo "Usage: $app FILE FROM TO"
+	echo "Trim a video by only keeping the specified time window."
+	echo "FROM and TO specify the starting and end times for which the video must be kept."
+	echo "The example below trims movie.mp4 to only keep content from min 5 and 33 sec to 1 hour, 7 min and 42 sec."
+	echo "$app movie.mp4 5:33 1:7:42"
 	exit 1
 fi
 
 tmp="tmp_$$_$RANDOM_$1"
-ffmpeg -i "$1" -ss $2 -c:v copy -c:a copy "$tmp" && mv "$tmp" "$1"
+ffmpeg -i "$1" -ss $2 -to $3 -c:v copy -c:a copy "$tmp" && mv "$tmp" "$1"
