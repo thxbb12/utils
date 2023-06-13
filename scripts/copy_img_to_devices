@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Requires the "dcfldd" utility.
+
+app=`basename $0`
+
+if [ $# -lt 2 ]; then
+    echo "Copy a compressed image file into several devices at once."
+    echo "Require the \"dcfldd\" utility."
+    echo ""
+    echo "Usage: $app IMAGE a b c ..."
+    echo ""
+    echo "IMAGE  compressed (gzip) image file to copy to multiple devices"
+    echo "a      /dev/sdX device to copy the image to"
+    echo "       a means /dev/sda, b means /dev/sdb, etc."
+    echo ""
+    echo "Example:"
+    echo "Copy sdcard.img.gz to /dev/sdb, /dev/sdi and /dev/sdh"
+    echo "$app sdcard.img.gz b i h"
+    exit 1
+fi
+
+src=$1
+shift 1
+dst=""
+devices=""
+for i in "$@"; do
+    devices="$devices /dev/sd$i"
+done
+
+echo "Source image file: $src"
+echo "Destination devices: $devices"
+
+while true; do
+    read -p "Proceed? (y/n) " yn
+    case $yn in
+        [Yy]*)
+            for i in "$@"; do
+                dst="$dst of=/dev/sd$i"
+            done
+
+            zcat $src | dcfldd $dst
+            status=$?
+            sync
+            if [ $status = 0 ]; then
+                echo "Image copies successful."
+            else
+                echo "Image copies failed!"
+            fi
+
+            exit $status
+            break;;
+
+        [Nn]*) exit 1;;
+        * ) echo "Please enter \"y\" or \"n\"";;
+    esac
+done
+
+exit 1

@@ -82,4 +82,4 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK
+qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK -device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+app=`basename $0`
+
+if [ $# -ne 2 ]; then
+	echo "Dump a device's content into a compressed image file."
+	echo "Require \"pigz\" which is a parallel version of gzip."
+	echo ""
+	echo "Usage: $app DEVICE IMAGE"
+	echo ""
+	echo "Example: $app /dev/sda sdcard.img"
+	exit 1
+fi
+
+dev=$1
+file=$2
+
+dd if=$dev bs=4M status=progress | pigz > $file
