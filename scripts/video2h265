@@ -12,16 +12,6 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-# ffmpeg arguments:
-# -r   : output framerate (24, 30, etc.)
-# -s   : output resolution (hd720, 1280x720, 320x200, etc.)
-# -b:v : output bitrate (800k, 1M, etc.)
-# -c:v : output video codec (h265, hevc, vp9, etc.)
-# ffmpeg -i input.mp4 -b:v 1500k -r 15 -s 320x200 -c:v h265 output.mp4
-# -filter_threads n : uses n threads for processing (default to total number of CPUs)
-#
-# To list all supported codecs by ffmpeg: ffmpeg -codecs
-
 quality=$1
 if [ $quality -gt 51 ] || [ $quality -lt 0 ]; then
 	echo "Invalid quality value! (must be between 0 and 51)"
@@ -40,5 +30,9 @@ fi
 input="$2"
 ext=${input##*.}
 output="${input%%.$ext}-h265.mp4"
-#ffmpeg -i "$input" -b:v "$bitrate"k -c:v h265 -threads $cpus "$output"
+
+# To list all supported codecs by ffmpeg: ffmpeg -codecs
+# To change frame rate to 30 frames/sec: "-r 30"
+# To scale the resolution to 1280x800: "-s 1280x800" 
+
 ffmpeg -i "$input" -c:v libx265 -preset medium -crf "$quality" -threads $cpus "$output"
