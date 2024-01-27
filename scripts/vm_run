@@ -84,4 +84,4 @@ fi
 #guest_agent="-device virtio-serial-pci -device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=path_to_sock_file,server=on,wait=off,id=qga0"
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK -device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 -bios /usr/share/ovmf/OVMF.fd
+qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK -device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 -bios /usr/share/ovmf/OVMF.fd -device intel-hda -device hda-duplex
