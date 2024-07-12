@@ -19,6 +19,9 @@ NETWORK="-nic user,model=virtio-net-pci"
 
 AUDIO="-device intel-hda -device hda-duplex"
 
+# Paravirtualized mouse: not supported well in most guest OSes, hence commented out
+#MOUSE="-device virtio-mouse"
+
 # Enable QEMU Guest Agent to communicate with Guest OS
 QGA="-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0"
 
@@ -111,5 +114,5 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga qxl $NETWORK $AUDIO $QGA -device virtio-mouse $SPICE
+qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga qxl $NETWORK $AUDIO $QGA $MOUSE $SPICE
 
