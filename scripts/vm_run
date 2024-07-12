@@ -9,7 +9,8 @@ CPUS=4
 # Amount of RAM to use
 RAM=4G
 
-# Default firmware
+# UEFI is the default firmware
+# On Ubuntu 24.04 make sure to install the "ovmf" package
 BIOS="-bios /usr/share/ovmf/OVMF.fd"
 
 # Provide the VM with a network interface and NAT Internet access.
@@ -110,5 +111,5 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga qxl $NETWORK $FW $AUDIO $QGA -device virtio-mouse $SPICE
+qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga qxl $NETWORK $AUDIO $QGA -device virtio-mouse $SPICE
 
