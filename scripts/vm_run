@@ -114,5 +114,5 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga qxl $NETWORK $AUDIO $QGA $MOUSE $SPICE
+qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK $AUDIO $QGA $MOUSE $SPICE
 
