@@ -11,7 +11,7 @@ RAM=4G
 
 # UEFI is the default firmware
 # On Ubuntu 24.04 make sure to install the "ovmf" package
-BIOS="-bios /usr/share/ovmf/OVMF.fd"
+#BIOS="-bios /usr/share/ovmf/OVMF.fd"
 
 # Provide the VM with a network interface and NAT Internet access.
 # The argument "-nic none" tells QEMU to not use a network interface.
