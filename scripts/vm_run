@@ -13,6 +13,9 @@ RAM=4G
 # On Ubuntu 24.04 make sure to install the "ovmf" package
 #BIOS="-bios /usr/share/ovmf/OVMF.fd"
 
+DISP="-vga virtio"
+#DISP="-device virtio-gpu-gl-pci -display sdl,gl=on"
+
 # Provide the VM with a network interface and NAT Internet access.
 # The argument "-nic none" tells QEMU to not use a network interface.
 NETWORK="-nic user,model=virtio-net-pci"
@@ -119,4 +122,4 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -enable-kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $disk_drive $cdrom_drive -vga virtio $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD
+qemu-system-x86_64 -machine accel=kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $DISP $disk_drive $cdrom_drive $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD
