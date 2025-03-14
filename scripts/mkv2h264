@@ -14,4 +14,4 @@ fi
 input="$1"
 ext=${input##*.}
 output="${input%%.$ext}-h264.mkv"
-ffmpeg -i $input -map 0 -c copy -c:v libx264 -crf 23 -preset medium $output
+ffmpeg -i "$input" -map 0 -c copy -c:v libx264 -crf 23 -preset medium "$output"
