@@ -3,9 +3,8 @@
 if [ $# -ne 1 ]; then
 	app=`basename $0`
 	echo "Usage: $app PATTERN"
-	echo "Recursively search all files containing a given PATTERN and print paths."
-	echo "Example: f xy => display every file containing the xy sequence."
+	echo "Recursively search all files or directories containing a given PATTERN and print paths."
 	exit 1
 fi
 
-find . -iname "*$1*" -type f
+find . -iname "*$1*"
