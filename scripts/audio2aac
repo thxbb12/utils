@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-	echo "Convert the audio of a video to 2-channel AAC while leaving the video untouched."
+	echo "Convert the audio of a video to AAC while leaving the video untouched."
 	echo "Usage: audio2aac FILE"
 	echo "The generated output file has the same name as the input,"
 	echo "except for the filename that is postfixed with -aac"
@@ -21,4 +21,4 @@ fi
 input="$1"
 ext=${input##*.}
 output="${input%%.$ext}-aac.$ext"
-ffmpeg -i "$input" -c:v copy -af "pan=stereo|FL=FL|FR=FR" -c:a aac -threads $cpus "$output"
+ffmpeg -i "$input" -c:v copy -c:a aac -threads $cpus "$output"

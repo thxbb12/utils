@@ -35,4 +35,4 @@ output="${input%%.$ext}-mpeg4.mp4"
 # To change frame rate to 30 frames/sec: "-r 30"
 # To scale the resolution to 1280x800: "-s 1280x800" 
 
-ffmpeg -i "$input" -c:v libxvid -qscale:v "$quality" -threads $cpus "$output"
+ffmpeg -i "$input" -c:a copy -c:v libxvid -qscale:v "$quality" -threads $cpus "$output"
