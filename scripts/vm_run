@@ -38,9 +38,6 @@ SHARED_CLIPBOARD="-chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on -device
 # Give the VM direct access to /dev/ttyS0
 #SERIAL_PASSTHROUGH="-chardev serial,path=/dev/ttyS0,id=myserial -device pci-serial,chardev=myserial"
 
-# Embed a passwordless spice server on port 8000
-#SPICE="-spice port=8000,disable-ticketing=on"
-
 # QEMU minimum major version required.
 MAJOR_VERSION_REQUIRED=3
 
@@ -105,11 +102,15 @@ while [[ $# -gt 0 ]]; do
      shift 1
      ;;
     -spice)
-      # Spice server for remote access (VDI)
+      # Embed a passwordless Spice server on port 8000 for remote access (VDI)
       SPICE="-device virtio-serial-pci -spice port=8000,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent"
       shift 1
       ;;
-    *)
+    -temp)
+     SNAPSHOT=-snapshot
+     shift 1
+     ;;
+   *)
       echo "Unknown argument $1"
       exit 1
       ;;
@@ -125,4 +126,4 @@ if [ ! -z $iso ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -machine accel=kvm $BIOS -cpu host -smp cpus=$CPUS -m $RAM -boot order=d $DISP $disk_drive $cdrom_drive $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD
+qemu-system-x86_64 -machine accel=kvm $BIOS -smp cpus=$CPUS -m $RAM -boot order=d $DISP $disk_drive $cdrom_drive $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD $SNAPSHOT
