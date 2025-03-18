@@ -51,12 +51,13 @@ function usage {
 	echoerr "$APP - launch a VM on the specified disk image(s)."
 	echoerr "The VM is configured with $CPUS CPUs and $RAM of RAM."
     echoerr ""
-    echoerr "Usage: $APP [-bios] [-spice] -d disk -i iso"
+    echoerr "Usage: $APP [-bios] [-spice] [-discard] -d disk -i iso"
     echoerr ""
-    echoerr "-bios   use BIOS as firmware instead of UEFI"
-    echoerr "-spice  run a Spice server for remote access (VDI)"
-    echoerr "disk    the disk image to use (typically a .qcow file)"
-    echoerr "iso     the CD/DVD-ROM image to use (typically an .iso file)"
+    echoerr "-bios     use BIOS as firmware instead of UEFI"
+    echoerr "-spice    run a Spice server for remote access (VDI)"
+    echoerr "-discard  temprary VM: changes to disk will be discarded upon exit"
+    echoerr "disk      the disk image to use (typically a .qcow file)"
+    echoerr "iso       the CD/DVD-ROM image to use (typically an .iso file)"
     echoerr ""
     echoerr "Argument between [] are optional."
     echoerr "Either -d or -i (or both) must be specified."
@@ -106,7 +107,7 @@ while [[ $# -gt 0 ]]; do
       SPICE="-device virtio-serial-pci -spice port=8000,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent"
       shift 1
       ;;
-    -temp)
+    -discard)
      SNAPSHOT=-snapshot
      shift 1
      ;;
