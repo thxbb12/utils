@@ -33,6 +33,7 @@ AUDIO="-audiodev pa,id=myaudio,out.mixing-engine=off -device intel-hda -device h
 QGA="-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 -chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0"
 
 # Provide shared clipboard through spice guest agent
+# Must be disabled if -spice is enabled (otherwise redundant device)
 SHARED_CLIPBOARD="-chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on -device virtio-serial-pci -device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0"
 
 # Give the VM direct access to /dev/ttyS0
@@ -51,13 +52,13 @@ function usage {
 	echoerr "$APP - launch a VM on the specified disk image(s)."
 	echoerr "The VM is configured with $CPUS CPUs and $RAM of RAM."
     echoerr ""
-    echoerr "Usage: $APP [-bios] [-spice] [-discard] -d disk -i iso"
+    echoerr "Usage: $APP [-bios] [-spice] [-snapshot] -d disk -i iso"
     echoerr ""
-    echoerr "-bios     use BIOS as firmware instead of UEFI"
-    echoerr "-spice    run a Spice server for remote access (VDI)"
-    echoerr "-discard  temprary VM: changes to disk will be discarded upon exit"
-    echoerr "disk      the disk image to use (typically a .qcow file)"
-    echoerr "iso       the CD/DVD-ROM image to use (typically an .iso file)"
+    echoerr "-bios        use BIOS as firmware instead of UEFI"
+    echoerr "-spice       run a Spice server for remote access (VDI)"
+    echoerr "-snapshot    temporary VM: changes to disk will be discarded upon exit"
+    echoerr "disk         the disk image to use (typically a .qcow file)"
+    echoerr "iso          the CD/DVD-ROM image to use (typically an .iso file)"
     echoerr ""
     echoerr "Argument between [] are optional."
     echoerr "Either -d or -i (or both) must be specified."
@@ -105,9 +106,11 @@ while [[ $# -gt 0 ]]; do
     -spice)
       # Embed a passwordless Spice server on port 8000 for remote access (VDI)
       SPICE="-device virtio-serial-pci -spice port=8000,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent"
+      # Disable shared clipboard as it conflicts with the arguments above
+      SHARED_CLIPBOARD=""
       shift 1
       ;;
-    -discard)
+    -snapshot)
      SNAPSHOT=-snapshot
      shift 1
      ;;
