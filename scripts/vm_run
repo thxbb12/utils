@@ -22,9 +22,8 @@ DISP="-vga virtio"
 # Furthermore, we redirect port 4000 on localhost interface to 22 in the VM.
 NETWORK="-nic user,model=virtio,hostfwd=tcp:127.0.0.1:4000-:22"
 
-#AUDIO="-audiodev pa,id=myaudio,out.mixing-engine=off -device ac97,audiodev=myaudio"
-#AUDIO="-audiodev pa,id=myaudio,out.mixing-engine=off -device qemu-xhci -device usb-audio,audiodev=myaudio"
-AUDIO="-audiodev pa,id=myaudio,out.mixing-engine=off -device intel-hda -device hda-output,audiodev=myaudio"
+# Use "ac97" if an older audio device is preferable
+AUDIO="-device intel-hda"
 
 # Paravirtualized mouse: not supported well in most guest OSes, hence commented out
 #MOUSE="-device virtio-mouse"
