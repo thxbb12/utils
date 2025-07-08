@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Use "sudo brightnessctl -l" to list supported devices
+ sudo brightnessctl --device='dell::kbd_backlight' s 1
