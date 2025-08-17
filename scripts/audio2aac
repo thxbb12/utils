@@ -4,7 +4,7 @@ if [ $# -ne 1 ]; then
 	echo "Convert the audio of a video to AAC while leaving the video untouched."
 	echo "Usage: audio2aac FILE"
 	echo "The generated output file has the same name as the input,"
-	echo "except for the filename that is postfixed with -aac"
+	echo "except that it is postfixed with \"-aac\""
 	echo "Requires ffmpeg"
 	exit 1
 fi

@@ -7,7 +7,7 @@ if [ $# -ne 2 ]; then
 	echo "the extension is mp4 and the filename is postfixed with -h265."
 	echo "The video codec uses a variable bitrate and the audio is AAC."
 	echo "QUALITY must be between 0 (best) and 51 (worst)."
-	echo "A quality of 25 seems to be a good default."
+	echo "A quality of 23 seems to be a good default."
 	echo "Requires ffmpeg"
 	exit 1
 fi

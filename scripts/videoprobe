@@ -1,0 +1,8 @@
+#!/bin/bash
+
+for i in $@; do
+    q=$(ffprobe -hide_banner -i "$i" 2>&1 | grep Video)
+    echo "[$i]"
+    echo $q
+    echo "-------------------------"
+done

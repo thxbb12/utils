@@ -31,8 +31,4 @@ input="$2"
 ext=${input##*.}
 output="${input%%.$ext}-mpeg4.mp4"
 
-# To list all supported codecs by ffmpeg: ffmpeg -codecs
-# To change frame rate to 30 frames/sec: "-r 30"
-# To scale the resolution to 1280x800: "-s 1280x800" 
-
-ffmpeg -i "$input" -c:a copy -c:v libxvid -qscale:v "$quality" -threads $cpus "$output"
+fmpeg -i "$input" -c:a copy -c:v libxvid -qscale:v "$quality" -threads $cpus "$output"

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Check for at least two video files
+if [ "$#" -lt 2 ]; then
+	app=$(basename $0)
+	echo "Usage: $app video1.mp4 video2.mp4 [video3.mp4 ...]"
+	exit 1
+fi
+
+# Create a temporary file list
+LIST=$(mktemp)
+
+# Generate ffmpeg input list format
+for f in "$@"; do
+	echo "file '$PWD/$f'" >> "$LIST"
+done
+
+# Output file name
+OUTPUT="merged_output.mp4"
+
+# Run ffmpeg to concatenate videos
+ffmpeg -f concat -safe 0 -i "$LIST" -c copy "$OUTPUT"
+
+# Clean up
+rm "$LIST"
+
+echo "Videos merged into $OUTPUT"
