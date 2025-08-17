@@ -5,11 +5,11 @@ if [ $# -ne 1 ]; then
 	echo "Usage: video2h264 FILE"
 	echo "The generated output file has the same name as the input,"
 	echo "except that it is postfixed with \"-h264\""
-	echo "It also converts the audio to 2 channels AAC."
+	echo "It also converts the audio to 2-channel AAC."
 	exit 1
 fi
 
-quality=24
+quality=23
 
 # To avoid saturating the system, leave 1 physical CPU for other things
 cores=`lscpu|grep "^CPU(s):"|awk -F":" '{print $2}'`
@@ -29,4 +29,4 @@ output="${input%%.$ext}-h264.$ext"
 # To scale the resolution to 1920x1080: "-s 1920x1080" 
 # To crop the video to a specific area: -vf "crop = 1280:545:0:88"
 
-ffmpeg -i "$input" -c:a aac -ac 2 -map 0 -c copy -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -b:a 160k -movflags +faststart "$output"
+ffmpeg -i "$input" -c:s copy -c:a aac -ac 2 -b:a 160k -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -movflags +faststart -threads $cpus "$output"
