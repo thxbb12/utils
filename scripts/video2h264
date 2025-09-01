@@ -1,15 +1,17 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-	echo "Re-encode (using ffmpeg) a video file using the H264 codec."
-	echo "Usage: video2h264 FILE"
-	echo "The generated output file has the same name as the input,"
-	echo "except that it is postfixed with \"-h264\""
-	echo "It also converts the audio to 2-channel AAC."
-	exit 1
-fi
-
 quality=23
+
+usage() {
+	app=$(basename $0)
+	echo "Usage: $app [-q quality] file1 [file2 ...]" >&2
+	echo "Re-encode (using ffmpeg) video files using the H264 codec." >&2
+	echo "An optional quality parameter (default: $quality) ranging from 0 to 51 can" >&2
+	echo "be specified, where 0 means lossless and 51 the worst quality possible." >&2
+	echo "The generated output files will be postfixed with \"-h264\"" >&2
+	echo "The audio will also be converted to 2-channel AAC." >&2
+	exit 1
+}
 
 # To avoid saturating the system, leave 1 physical CPU for other things
 cores=`lscpu|grep "^CPU(s):"|awk -F":" '{print $2}'`
@@ -20,13 +22,42 @@ if [ $cpus -gt 1 ]; then
 	cpus=$((cpus-1))
 fi
 
-input="$1"
-ext=${input##*.}
-output="${input%%.$ext}-h264.$ext"
+files=()
 
-# To list all supported codecs by ffmpeg: ffmpeg -codecs
-# To change frame rate to 30 frames/sec: "-r 30"
-# To scale the resolution to 1920x1080: "-s 1920x1080" 
-# To crop the video to a specific area: -vf "crop = 1280:545:0:88"
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -q)
+            shift || usage
+            [[ "$1" =~ ^[0-9]+$ ]] || { echo "Error: quality must be a number" >&2 ; usage; }
+            quality="$1"
+            shift
+            ;;
+        -*)
+            echo "Error: Unknown option $1"
+            usage
+            ;;
+        *)
+            files+=("$1")
+            shift
+            ;;
+    esac
+done
 
-ffmpeg -i "$input" -c:s copy -c:a aac -ac 2 -b:a 160k -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -movflags +faststart -threads $cpus "$output"
+# Must have at least one file
+[[ ${#files[@]} -ge 1 ]] || usage
+
+for f in "${files[@]}"; do
+    [[ -f "$f" ]] || { echo "Error: '$f' is not a valid file" >&2 ; usage; }
+done
+
+for f in "${files[@]}"; do
+	ext=${f##*.}
+	output="${f%%.$ext}-h264.$ext"
+
+	# To list all supported codecs by ffmpeg: ffmpeg -codecs
+	# To change frame rate to 30 frames/sec: "-r 30"
+	# To scale the resolution to 1920x1080: "-s 1920x1080" 
+	# To crop the video to a specific area: -vf "crop = 1280:545:0:88"
+
+	ffmpeg -i "$f" -c:s copy -c:a aac -ac 2 -b:a 160k -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -movflags +faststart -threads $cpus "$output"
+done

@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-	app=`basename $0`
-	echo "Usage: $app file"
-	echo "Mark \"file\" to be ignored by Dropbox' client."
+if [ $# -lt 1 ]; then
+	app=$(basename $0)
+	echo "Usage: $app dir1 [dir2 ...]" >&2
+	echo "Mark directories to be ignored by the Dropbox client." >&2
 	exit 1
 fi
 
-setfattr -n user.com.dropbox.ignored -v 1 "$1"
+for i in "$@"; do
+	setfattr -n user.com.dropbox.ignored -v 1 "$i"
+done
