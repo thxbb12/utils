@@ -1,0 +1,14 @@
+#!/bin/bash
+
+BUILTIN_SCREEN=eDP-1
+
+if [ $# -ne 1 ]; then
+	app=$(basename $0)
+	echo "Usage: $app NAME" > /dev/stderr
+	echo "Where ID is the identifier of the external screen as displayed by screen_list" > /dev/stderr
+	exit 1
+fi
+
+EXTERNAL_SCREEN=$1
+
+xrandr --output $BUILTIN_SCREEN --mode 1920x1080 --output $EXTERNAL_SCREEN --mode 1920x1080 --same-as $BUILTIN_SCREEN

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# List connected screens
+xrandr|grep " connected "

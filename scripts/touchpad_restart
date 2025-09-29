@@ -1,5 +1,7 @@
 #!/bin/bash
 
-sudo modprobe -r i2c_hid_acpi i2c_hid && sudo modprobe i2c_hid i2c_hid_acpi
+sudo modprobe -r i2c_hid_acpi i2c_hid
+sleep 2
+sudo modprobe i2c_hid i2c_hid_acpi
 
-#modprobe -r hid_multitouch && modprobe hid_multitouch
+#sudo modprobe -r hid_multitouch && modprobe hid_multitouch
