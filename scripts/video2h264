@@ -60,6 +60,5 @@ for f in "${files[@]}"; do
 	# To crop the video to a specific area: -vf "crop = 1280:545:0:88"
 
     # audio=-c:a aac -ac 2 -b:a 160k
-    audio=-acodec copy
-    ffmpeg -i "$f" -c:s $audio copy -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -movflags +faststart -threads $cpus "$output"
+    ffmpeg -i "$f" -map 0 -c:a copy -c:s copy -c:v libx264 -preset slow -crf $quality -profile:v high -level:v 4.1 -pix_fmt yuv420p -maxrate:v 14M -bufsize:v 28M -movflags +faststart -threads $cpus "$output"
 done
