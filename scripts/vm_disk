@@ -1,0 +1,20 @@
+#!/bin/bash
+
+APP=`basename $0`
+
+function echoerr {
+    echo "$@" >&2
+}
+
+function usage {
+    echoerr "$APP - create an empty VM disk image (qcow2 format)"
+    echoerr "Usage: $APP disk_image_name size"
+    echoerr "Example: $APP disk.qcow 50G"
+    exit 1
+}
+
+if [ $# -ne 3 ]; then
+    usage
+fi
+
+qemu-img create -f qcow2 $1 $2

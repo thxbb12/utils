@@ -1,0 +1,20 @@
+#!/bin/bash
+
+APP=`basename $0`
+
+function echoerr {
+    echo "$@" >&2
+}
+
+function usage {
+    echoerr "$APP - create an overlay on top of an existing disk image"
+    echoerr "Usage: $APP base_image overlay"
+    echoerr "Example: $APP base.qcow overlay.qcow"
+    exit 1
+}
+
+if [ $# -ne 3 ]; then
+    usage
+fi
+
+qemu-img create -F qcow2 -b $1 -f qcow2 $2
