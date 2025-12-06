@@ -52,7 +52,7 @@ done
 
 for f in "${files[@]}"; do
 	ext=${f##*.}
-	output="${f%%.$ext}-h264.$ext"
+	output="${f%%.$ext}-h264.mkv"
 
 	# To list all supported codecs by ffmpeg: ffmpeg -codecs
 	# To change frame rate to 30 frames/sec: "-r 30"
