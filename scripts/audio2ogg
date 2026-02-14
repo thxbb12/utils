@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+	echo "Convert an audio file to a high quality ogg (vorbis)."
+	echo "Usage: audio2ogg FILE"
+	echo "Requires ffmpeg"
+	exit 1
+fi
+
+input="$1"
+ext=${input##*.}
+output="${input%%.$ext}.ogg"
+ffmpeg -i "$input" -c:a libvorbis -q:a 8 "$output"
