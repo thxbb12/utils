@@ -19,8 +19,7 @@ DISP="-vga virtio"
 
 # Provide the VM with a network interface and NAT Internet access.
 # The argument "-nic none" tells QEMU to not use a network interface.
-# Furthermore, we redirect port 4000 on localhost interface to 22 in the VM.
-NETWORK="-nic user,model=virtio,hostfwd=tcp:127.0.0.1:4000-:22"
+NETWORK="-nic user,model=virtio"
 
 # Use "ac97" if an older audio device is preferable
 AUDIO="-device intel-hda"
@@ -33,7 +32,7 @@ QGA="-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.gue
 
 # Provide shared clipboard through spice guest agent
 # Must be disabled if -spice is enabled (otherwise redundant device)
-SHARED_CLIPBOARD="-chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on -device virtio-serial-pci -device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0"
+#SHARED_CLIPBOARD="-chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on -device virtio-serial-pci -device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0"
 
 # Give the VM direct access to /dev/ttyS0
 #SERIAL_PASSTHROUGH="-chardev serial,path=/dev/ttyS0,id=myserial -device pci-serial,chardev=myserial"
@@ -51,11 +50,12 @@ function usage {
 	echoerr "$APP - launch a VM on the specified disk image(s)."
 	echoerr "The VM is configured with $CPUS CPUs and $RAM of RAM."
     echoerr ""
-    echoerr "Usage: $APP [-bios] [-spice] [-snapshot] -d disk -i iso"
+    echoerr "Usage: $APP [-bios] [-spice] [-snapshot] [-ssh port] -d disk -i iso"
     echoerr ""
     echoerr "-bios        use BIOS as firmware instead of UEFI"
     echoerr "-spice       run a Spice server for remote access (VDI)"
     echoerr "-snapshot    temporary VM: changes to disk will be discarded upon exit"
+    echoerr "-ssh port    bind host port \"port\" to port 22 in the VM"
     echoerr "disk         the disk image to use (typically a .qcow file)"
     echoerr "iso          the CD/DVD-ROM image to use (typically an .iso file)"
     echoerr ""
@@ -113,6 +113,10 @@ while [[ $# -gt 0 ]]; do
      SNAPSHOT=-snapshot
      shift 1
      ;;
+    -ssh)
+      ssh_port="$2"
+      shift 2
+      ;;
    *)
       echo "Unknown argument $1"
       exit 1
@@ -126,6 +130,11 @@ fi
 
 if [ ! -z $iso ]; then
     cdrom_drive="-drive file=$iso,index=1,media=cdrom,format=raw,read-only=on"
+fi
+
+if [ ! -z $ssh_port ]; then
+	# Redirect port $ssh_port on localhost interface to 22 in the VM.
+	NETWORK=$NETWORK,hostfwd=tcp:127.0.0.1:$ssh_port-:22
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
