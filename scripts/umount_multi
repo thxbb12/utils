@@ -1,18 +1,36 @@
 #!/bin/bash
-
 # This script umounts, in bulk, all partitions on the specified devices.
+
+set -e
 
 app=`basename $0`
 
-if [ $# -lt 2 ]; then
-    echo "usage: $app a b c ..."
-    echo "a      umounts all partitions from device /dev/sdX"
-    echo "       a means /dev/sda, b means /dev/sdb, etc."
+if [ $# -lt 1 ]; then
+    echo "Usage: $app count" 2>/dev/null
+    echo "Umounts all partitions from \"count\" devices" 2>/dev/null
+	echo "E.g. if count is 3, then these are umounted: /dev/sda, /dev/sdb, /dev/sdc" 2>/dev/null
+	echo "The maximum number of supported devices is 26 (i.e. a to z)." 2>/dev/null
     exit 1
 fi
 
-for i in "$@"; do
+n=$1
+
+if ! [[ "$n" =~ ^[1-9][0-9]*$ ]]; then
+	echo "Invalid number" 2>/dev/null
+	exit 1
+fi
+
+if [ $n -gt 26 ]; then
+	echo "Unsupported number of devices!" 2>/dev/null
+	exit 1
+fi
+
+alpha=abcdefghijklmnopqrstuvwxyz
+
+for ((i=0; i<n; i++)); do
+    dev=`printf '%s\n' "${alpha:i:1}"`
+    umount /dev/sd$dev 2>/dev/null
     for part in {1..10}; do
-        umount /dev/sd$i$part 2>/dev/null
+        umount /dev/sd$dev$part 2>/dev/null
     done
 done
