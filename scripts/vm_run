@@ -138,4 +138,4 @@ if [ ! -z $ssh_port ]; then
 fi
 
 # -boot order=d tells QEMU to boot to CDROM first
-qemu-system-x86_64 -machine accel=kvm $BIOS -smp cpus=$CPUS -m $RAM -boot order=d $DISP $disk_drive $cdrom_drive $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD $SNAPSHOT
+$QEMU -machine accel=kvm $BIOS -smp cpus=$CPUS -m $RAM -boot order=d $DISP $disk_drive $cdrom_drive $NETWORK $AUDIO $QGA $MOUSE $SPICE $SHARED_CLIPBOARD $SNAPSHOT
